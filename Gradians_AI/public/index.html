@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gradians AI - Boot</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(255, 255, 255, 0.04);
+      --panel2: rgba(255, 255, 255, 0.02);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --stroke2: rgba(255, 255, 255, 0.08);
+      --white: #ffffff;
+      --soft: rgba(255, 255, 255, 0.75);
+      --dim: rgba(255, 255, 255, 0.45);
+      --shadow: rgba(0, 0, 0, 0.85);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Orbitron", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #0b0b0b, #000 75%);
+      overflow: hidden;
+      color: var(--white);
+      position: relative;
+      animation: bgBreath 6s infinite ease-in-out;
+    }
+
+    /* 1) background breathing */
+    @keyframes bgBreath {
+      0%, 100% { filter: brightness(0.95) contrast(1.05); transform: scale(1); }
+      50% { filter: brightness(1.05) contrast(1.1); transform: scale(1.01); }
+    }
+
+    /* 2) vignette */
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.9));
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 3) grain/noise overlay */
+    .noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("https://www.transparenttextures.com/patterns/noise.png");
+      opacity: 0.10;
+      z-index: 4;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      animation: noiseShift 0.7s infinite steps(2);
+    }
+
+    @keyframes noiseShift {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-2px, 1px); }
+      50% { transform: translate(1px, -2px); }
+      75% { transform: translate(-1px, -1px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* 4) scanlines overlay */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 3px,
+        transparent 6px
+      );
+      opacity: 0.08;
+      z-index: 3;
+      pointer-events: none;
+      animation: scanMove 4s infinite linear;
+    }
+
+    @keyframes scanMove {
+      from { transform: translateY(0px); }
+      to { transform: translateY(50px); }
+    }
+
+    /* 5) moving grid */
+    .grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 70px 70px;
+      opacity: 0.05;
+      z-index: 1;
+      pointer-events: none;
+      animation: gridDrift 12s infinite linear;
+    }
+
+    @keyframes gridDrift {
+      from { transform: translateY(0); }
+      to { transform: translateY(70px); }
+    }
+
+    /* 6) fog blur blobs (bw only) */
+    .fog {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      filter: blur(120px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .fog span {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      animation: fogFloat 12s infinite alternate ease-in-out;
+    }
+
+    .fog span:nth-child(1) { top: -10%; left: -10%; }
+    .fog span:nth-child(2) { bottom: -20%; right: -10%; animation-duration: 15s; }
+    .fog span:nth-child(3) { top: 50%; left: 40%; width: 420px; height: 420px; animation-duration: 18s; }
+
+    @keyframes fogFloat {
+      from { transform: translate(-60px, -40px) scale(1); }
+      to { transform: translate(80px, 70px) scale(1.3); }
+    }
+
+    /* 7) floating dust particles */
+    .dust {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .dust i {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: dustFloat linear infinite;
+      filter: blur(0.5px);
+    }
+
+    @keyframes dustFloat {
+      from { transform: translateY(120vh); opacity: 0; }
+      30% { opacity: 1; }
+      to { transform: translateY(-30vh); opacity: 0; }
+    }
+
+    /* MAIN CARD */
+    .card {
+      width: 480px;
+      padding: 52px 42px;
+      border-radius: 30px;
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(22px);
+      box-shadow: 0px 30px 120px rgba(0, 0, 0, 0.9);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      transform: translateY(45px) scale(0.92);
+      opacity: 0;
+      animation: intro 1.2s cubic-bezier(.18,.89,.32,1.28) forwards;
+      transition: transform 0.25s ease;
+    }
+
+    /* 8) intro bounce */
+    @keyframes intro {
+      to {
+        transform: translateY(0px) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* 9) border glow ring */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 32px;
+      background: conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.0),
+        rgba(255, 255, 255, 0.6),
+        rgba(255, 255, 255, 0.0),
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.0)
+      );
+      animation: ringRotate 4s linear infinite;
+      filter: blur(10px);
+      opacity: 0.6;
+      z-index: -2;
+    }
+
+    /* 10) ring rotation */
+    @keyframes ringRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 11) inner dark fill */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 28px;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: -1;
+    }
+
+    /* 12) corner highlights */
+    .corner {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      opacity: 0.35;
+      animation: cornerPulse 3s infinite ease-in-out;
+    }
+
+    .corner.tl { top: 18px; left: 18px; border-right: none; border-bottom: none; border-radius: 14px 0 0 0; }
+    .corner.tr { top: 18px; right: 18px; border-left: none; border-bottom: none; border-radius: 0 14px 0 0; }
+    .corner.bl { bottom: 18px; left: 18px; border-right: none; border-top: none; border-radius: 0 0 0 14px; }
+    .corner.br { bottom: 18px; right: 18px; border-left: none; border-top: none; border-radius: 0 0 14px 0; }
+
+    @keyframes cornerPulse {
+      0%,100% { opacity: 0.25; transform: scale(1); }
+      50% { opacity: 0.65; transform: scale(1.08); }
+    }
+
+    /* 13) logo styling */
+    .logo {
+      font-size: 2.7rem;
+      font-weight: 800;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: white;
+      margin-bottom: 12px;
+      position: relative;
+      animation: logoFlicker 4s infinite;
+      text-shadow: 0px 0px 25px rgba(255, 255, 255, 0.25);
+    }
+
+    /* 14) glitch flicker */
+    @keyframes logoFlicker {
+      0%, 100% { opacity: 1; transform: translateX(0); }
+      92% { opacity: 1; }
+      93% { opacity: 0.6; transform: translateX(-1px); }
+      94% { opacity: 1; transform: translateX(1px); }
+      95% { opacity: 0.75; transform: translateX(-2px); }
+      96% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* 15) subtitle fade */
+    .subtitle {
+      font-size: 0.92rem;
+      letter-spacing: 1.8px;
+      opacity: 0.65;
+      margin-bottom: 34px;
+      animation: subtitleWave 2.5s infinite ease-in-out;
+    }
+
+    @keyframes subtitleWave {
+      0%,100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+
+    /* PROGRESS BAR */
+    .progress-wrap {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      box-shadow: inset 0px 0px 30px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    /* 16) progress */
+    .progress {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.2), #ffffff);
+      background-size: 250% 250%;
+      animation: bwFlow 1.4s infinite linear;
+      transition: width 0.18s ease-out;
+      box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 17) bw gradient flow */
+    @keyframes bwFlow {
+      from { background-position: 0% 50%; }
+      to { background-position: 100% 50%; }
+    }
+
+    /* 18) shimmer sweep */
+    .progress::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -80px;
+      width: 80px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      filter: blur(14px);
+      transform: skewX(-25deg);
+      animation: sweep 1s infinite;
+    }
+
+    @keyframes sweep {
+      from { left: -80px; }
+      to { left: 120%; }
+    }
+
+    /* 19) loading text */
+    .loading-text {
+      margin-top: 18px;
+      font-size: 1.05rem;
+      letter-spacing: 1.4px;
+      opacity: 0.75;
+      animation: pulseText 1.3s infinite ease-in-out;
+    }
+
+    @keyframes pulseText {
+      0%,100% { opacity: 0.55; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    /* 20) typing dots animation */
+    .dots::after {
+      content: "";
+      display: inline-block;
+      width: 22px;
+      text-align: left;
+      animation: dots 1.3s infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ""; }
+      33% { content: "."; }
+      66% { content: ".."; }
+      100% { content: "..."; }
+    }
+
+    /* 21) system log panel */
+    .syslog {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-align: left;
+      opacity: 0.75;
+      line-height: 1.7;
+      height: 92px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .syslog b {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* 22) syslog scan highlight */
+    .syslog::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.12), transparent);
+      transform: translateX(-120%);
+      animation: logSweep 2.5s infinite;
+    }
+
+    @keyframes logSweep {
+      from { transform: translateX(-120%); }
+      to { transform: translateX(120%); }
+    }
+
+    /* 23) watermark */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-10deg);
+      opacity: 0.05;
+      z-index: 0;
+      pointer-events: none;
+      animation: watermarkFloat 6s infinite ease-in-out;
+    }
+
+    @keyframes watermarkFloat {
+      0%,100% { transform: translate(-50%, -50%) rotate(-10deg) scale(1); }
+      50% { transform: translate(-50%, -52%) rotate(-10deg) scale(1.08); }
+    }
+
+    .watermark img {
+      width: 360px;
+      filter: grayscale(1) contrast(1.2);
+    }
+
+    /* 24) exit animation */
+    .fadeOut {
+      animation: outro 1.1s ease forwards;
+    }
+
+    @keyframes outro {
+      to {
+        transform: translateY(-50px) scale(1.06);
+        opacity: 0;
+        filter: blur(12px);
+      }
+    }
+
+    /* 25) responsive */
+    @media (max-width: 520px) {
+      .card {
+        width: 92%;
+        padding: 42px 24px;
+      }
+      .logo {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="fog">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="grid"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <div class="dust" id="dust"></div>
+
+  <div class="watermark">
+    <img src="logo.svg" alt="Gradians AI Logo">
+  </div>
+
+  <div class="noise"></div>
+
+  <div class="card" id="card">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <div class="logo">Gradians AI</div>
+    <div class="subtitle">Initializing Cognitive Systems...</div>
+
+    <div class="progress-wrap">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="loading-text" id="loadingText">Loading<span class="dots"></span> 0%</div>
+
+    <div class="syslog" id="syslog">
+      <div>▸ <b>Neural Kernel</b> boot sequence active...</div>
+      <div>▸ Memory buffers calibrating...</div>
+      <div>▸ Encryption layer syncing...</div>
+    </div>
+  </div>
+  <script>
+    const dust = document.getElementById("dust");
+    for (let i = 0; i < 55; i++) {
+      const dot = document.createElement("i");
+      dot.style.left = Math.random() * 100 + "%";
+      dot.style.top = Math.random() * 100 + "%";
+      dot.style.animationDuration = (6 + Math.random() * 10) + "s";
+      dot.style.opacity = Math.random() * 0.6;
+      dot.style.transform = `scale(${0.5 + Math.random() * 1.6})`;
+      dust.appendChild(dot);
+    }
+
+    let progress = 0;
+    const progressBar = document.getElementById("progress");
+    const loadingText = document.getElementById("loadingText");
+    const syslog = document.getElementById("syslog");
+    const card = document.getElementById("card");
+
+    const logs = [
+      "▸ <b>Neural Core</b> initialized successfully.",
+      "▸ Verifying secure AI protocols...",
+      "▸ Optimizing response engine...",
+      "▸ Loading UI assets and modules...",
+      "▸ Synchronizing datasets...",
+      "▸ Final system validation running...",
+      "▸ <b>System Ready</b> — launching interface."
+    ];
+
+    let logIndex = 0;
+    function updateProgress() {
+      if (progress < 100) {
+        progress += Math.random() * 4 + 2;
+        if (progress > 100) progress = 100;
+
+        progressBar.style.width = progress + "%";
+        loadingText.innerHTML = `Loading<span class="dots"></span> ${Math.floor(progress)}%`;
+
+        if (progress > (logIndex + 1) * 14 && logIndex < logs.length) {
+          syslog.innerHTML += `<div>${logs[logIndex]}</div>`;
+          syslog.scrollTop = syslog.scrollHeight;
+          logIndex++;
+        }
+
+        setTimeout(updateProgress, 120);
+      } else {
+        loadingText.innerHTML = `Launching<span class="dots"></span>`;
+
+        setTimeout(() => {
+          card.classList.add("fadeOut");
+        }, 600);
+
+        setTimeout(() => {
+          window.location.href = "main.html";
+        }, 1500);
+      }
+    }
+
+    updateProgress();
+
+    // 28) mouse tilt effect
+    document.addEventListener("mousemove", (e) => {
+      const x = (window.innerWidth / 2 - e.clientX) / 35;
+      const y = (window.innerHeight / 2 - e.clientY) / 35;
+      card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+    });
+
+    // 29) reset tilt on leave
+    document.addEventListener("mouseleave", () => {
+      card.style.transform = "rotateY(0deg) rotateX(0deg)";
+    });
+  </script>
+
+</body>
+</html>

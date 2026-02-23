@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ----------  USER‑SCOPED DATA  ---------- */
+    match /users/{userId} {
+
+      /* public user profile doc (optional) */
+      allow read: if true;                // visible to anyone
+      allow write: if request.auth.uid == userId;
+
+      /* --- nested sub‑collections --- */
+
+      // 1️⃣  PROFILES  (users/{uid}/profiles/{doc})
+      match /profiles/{profileId} {
+        allow read, write: if request.auth.uid == userId;
+      }
+
+      // 2️⃣  HISTORY   (users/{uid}/history/{doc})
+      match /history/{historyId} {
+        allow read, write: if request.auth.uid == userId;
+      }
+    }
+
+    /* ----------  DENY everything else ---------- */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

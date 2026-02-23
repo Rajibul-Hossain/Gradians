@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Autonote Videos</title>
+  <link rel="stylesheet" href="autonote-videos.css"/>
+</head>
+<body>
+  <header>
+    <h1>Learning Vault</h1>
+    <p>Important points to remember 🤚</p>
+  </header>
+<div class="noise-overlay"></div>
+
+  <section class="video-grid">
+   <!--Videos to be shown-->
+    <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+  <img src="logo.svg" alt="Video Icon">
+  <h3>Understanding Newton's Laws</h3>
+  <p>Concept explained with daily life examples.</p>
+</div>
+
+    <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Photosynthesis Process</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Motion in straight line</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Integrations</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Differentiation</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Tissues</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Russian Revolution</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>French Revolution</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Nazism</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Triangles</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Polynomials</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Motion in 2D</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Optics</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>Cell, The fundamental unit of body</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+        <div class="video-card" onclick="openVideo('https://drive.google.com/file/d/1TTViBaYcsnMQfVO7WbLUDNmcrmsgw1E8/preview')">
+      <img src="logo.svg" alt="Video Icon">
+      <h3>India and its Location</h3>
+      <p>Diagram-based visual breakdown.</p>
+    </div>
+  </section>
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeVideo()">&times;</span>
+      <iframe id="videoFrame" loading="lazy" allowfullscreen></iframe>
+    </div>
+  </div>
+  <script src="autonote-videos.js"></script>
+  
+
+</body>
+</html>

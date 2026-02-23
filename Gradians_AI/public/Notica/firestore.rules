@@ -1,0 +1,27 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Each user can only access their own data
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Subcollection: history (lowercase, to match your code)
+      match /history/{doc} {
+        // Users can fully manage their own history docs
+        allow read, create, update, delete: if isOwner(uid);
+      }
+    }
+
+    // Feedback collection
+    match /feedback/{document} {
+      allow read: if true;                 // Anyone can read feedback
+      allow create: if request.auth != null; // Only signed-in users can submit
+      allow update, delete: if false;      // No one can edit or delete feedback
+    }
+  }
+}
+
+// ===== Helper function =====
+function isOwner(uid) {
+  return request.auth != null && request.auth.uid == uid;
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flashcard Generator • Gradians</title>
+ <link rel="stylesheet" href="s.css"> <link rel="icon" type="image/SVG" href="logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="app">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-badge"><img src="logo.svg" alt=""></div>
+        <div class="title">
+          <h2>Flashcard Generator</h2>
+          <p id="userEmailText">Not logged in </p>
+        </div>
+      </div>
+      <div class="right-tools">
+        <div class="status-pill" id="statusText">Ready</div>
+        <button class="icon-btn" onclick="login()">🔐</button>
+        <button class="icon-btn" onclick="logout()">🚪</button>
+        <button class="icon-btn" onclick="openVault()">📚</button>
+        <button class="icon-btn" onclick="exportJSON()">⬇️</button>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <h3>Generate Flashcards</h3>
+        <label>Topic</label>
+        <input id="topicInput" placeholder="Eg: Newton's Laws of Motion"/>
+        <div class="row">
+          <div>
+            <label>No. of Cards</label>
+            <select id="countSelect">
+              <option value="10">10 Cards</option>
+              <option value="15">15 Cards</option>
+              <option value="20" selected>20 Cards</option>
+              <option value="30">30 Cards</option>
+            </select>
+          </div>
+          <div>
+            <label>Difficulty</label>
+            <select id="difficultySelect">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+<div class="actions">
+  <div class="primary-action">
+    <button class="btn btn-primary" onclick="generateFlashcards()" data-tooltip="Generate flashcards instantly">
+      ⚡ Generate Flashcards
+    </button>
+  </div>
+  <div class="section-divider"></div>
+  <div class="utility-actions">
+    <button class="btn" onclick="saveToFirestore()" data-tooltip="Save flashcards to Cloud Vault">
+      ☁ Save Cloud
+    </button>
+    <button class="btn" onclick="saveLocal()" data-tooltip="Download flashcards locally">
+      💾 Save Local
+    </button>
+    <button class="btn btn-danger" onclick="clearAll()" data-tooltip="Clear everything">
+      🗑 Clear
+    </button>
+    <button class="btn" onclick="openVault()" data-tooltip="Open your saved flashcard vault">
+      📂 Open Vault
+    </button>
+  </div>
+  <div class="section-divider"></div>
+  <div class="export-actions">
+    <button class="btn" onclick="exportCSV()" data-tooltip="Export flashcards in CSV format">
+      📑 Export CSV
+    </button>
+    <button class="btn" onclick="exportPDF()" data-tooltip="Export flashcards in PDF format">
+      📄 Export PDF
+    </button>
+  </div>
+</div>
+        <input type="file" id="pdfInput" accept="application/pdf" hidden />
+        <div class="loading" id="loadingBox">
+          <div class="shimmer"></div>
+          <div class="shimmer"></div>
+          <div class="shimmer" style="width:70%"></div>
+        </div>
+        <div class="error" id="errorText"></div>
+        <div class="info-box">
+          ⚡ Tip: Use specific topics like:
+          <br><br>
+          <b>"Class 10 Light Reflection"</b> or <b>"Organic Chemistry Alcohols"</b>.
+          <br><br>
+        </div>
+      </div>
+      <div class="panel flash-wrapper">
+        <h3>Flashcards Viewer</h3>
+        <div class="flashcard-stack">
+          <div class="stack-layer layer-2"></div>
+          <div class="stack-layer layer-1"></div>
+          <div class="flashcard" id="flashcardBox" onclick="flipCard()">
+            <div class="flash-inner" id="flashInner">
+              <div class="face front" id="frontText">
+                Enter a topic and generate flashcards 🚀
+                <div class="meta">Tap to flip • Swipe left/right supported</div>
+              </div>
+              <div class="face back" id="backText">
+                Flashcard answer will appear here.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn" onclick="prevCard()">⬅ Prev</button>
+          <button class="btn" onclick="nextCard()">Next ➡</button>
+        </div>
+        </div>
+        <div class="progress" id="progressText">0 / 0</div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="vaultModal">
+    <div class="modal-box">
+      <div class="modal-top">
+        <h3>📚 Cloud Vault (Firestore)</h3>
+        <button class="icon-btn" onclick="closeVault()">✖</button>
+      </div>
+      <div class="vault-list" id="vaultList"></div>
+    </div>
+  </div>
+<script src="src.js"></script>
+</body>
+</html>

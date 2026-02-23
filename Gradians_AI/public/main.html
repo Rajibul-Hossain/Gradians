@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradians AI</title>
+  <link rel="stylesheet" href="stylesheets/styles.css">
+  <link rel="stylesheet" href="stylesheets/gradebot.css">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <style>
+    body {
+      width: 100vw;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at top center, #1e2331 -25%, black) !important;
+      position: relative;
+      padding-bottom: 2ch;
+      color: white;
+    }
+    .top-right-btns {
+      position: absolute;
+      top: 10px;
+      right: 0px;
+      display: flex;
+      gap: 4px;
+    }
+    .subscription-btn {
+      background: #120042;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
+    }
+    .subscription-btn:hover {
+      background: #0c0120;
+    }
+    main {
+      padding: 20px;
+    }
+    button[tip],
+    a[tip] {
+      margin: 5px;
+      cursor: pointer;
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    legend {
+      font-weight: bold;
+    }
+    .actionBtns {
+      display: flex;
+      gap: 10px;
+    }
+    .loginBtns {
+      margin-top: 20px;
+    }
+    .ball {
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1s infinite alternate;
+    }
+    .designer-container {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        animation: fadeInJump 6s ease-in-out infinite;
+    }
+
+    .designer {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1em;
+    }
+    @keyframes fadeInJump {
+        0%, 100% {
+            opacity: 0;
+            transform: translateY(0);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+    }
+    @keyframes bounce {
+      to {
+        transform: translateY(-50%);
+      }
+    }
+    * {
+    touch-action: manipulation; /* Prevents weird touch zooming issues */
+    pointer-events: auto;       /* Ensures elements are interactive */
+}
+
+input, textarea {
+    user-select: none;          /* Prevents accidental selection */
+    pointer-events: auto;       /* Ensures elements can be tapped */
+}
+
+body {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+  </style>
+</head>
+<body>
+  <div class="top-right-btns">
+    <button tip="Settings" onclick="setting(false)">⚙️</button>
+    <button tip="Feedback" class="feedback-btn" onclick="window.location.href='feedback.html'">📝</button>
+    <button id="install-button" style="display: none;">Install Gradians AI </button>
+    <a tip="Handwriting" href="handwriting.htm">✍🏻</a>
+    <button tip="History">⌛</button>
+  </div>
+  <div class="designer-container">
+    <div class="designer">
+         rajibulh
+    </div>
+</div>
+  <main>
+    <center>
+      <div id="info">
+        <select id="subject" onchange="pastChoice(this, 'value')" title="Subject">
+          <option value="subject">Auto</option>
+          <optgroup label="Main">
+            <option value="Mathematics">Maths</option>
+            <option value="Science">Science</option>
+          </optgroup>
+          <optgroup label="SST">
+            <option value="Geography">Geography</option>
+            <option value="History">History</option>
+            <option value="Political Science">Civics</option>
+            <option value="Economics">Economics</option>
+          </optgroup>
+          <optgroup label="Language">
+            <option value = "Sanskrit">Sanskrit</option>
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+          </optgroup>
+          <optgroup label="Optional">
+            <option value="Information Technology">Info. Tech.</option>
+            <option value="Artificial Intelligence">AI</option>
+            <option value="Computer Sciencefire">CS</option>
+            <option value="art">Art</option>
+          </optgroup>
+        </select>
+        <div id="mm">
+          <input type="range" min="1" max="80" step="1" id="marks" oninput="pastChoice(this, 'tip')" onmouseover="pastChoice(this, 'tip')" onmouseout="document.documentElement.style.setProperty('--thumb', 0)">
+          <span style="display: flex; justify-content: center;">
+            <label>Marks<label></label></span>
+        </div>
+        <br>
+      </div>
+    </center>
+    <center>
+      <form id="mainForm" onsubmit="return false" class="major">
+        <center id="img"></center>
+        <textarea name="gemini-1.5-flash" placeholder="Type your report..." rows="9" oninput="hideSubmit(this)"></textarea>
+        <br>
+        <button id="mic" onclick="stt()" tip="Speak your report">🎙️</button>
+        <button onclick="document.querySelector(`input[type='file']`).click()" id="fakeBtn" tip="Image Upload" before="📁">Upload</button>
+        <button type="submit" class="scale0" id="ansSubmit" tip="Send">▶️</button>
+        <input class="hide" type="file" id="qna" multiple onchange="imgFiles(event)" accept="image/png, image/jpeg, image/webp, image/heic, image/heif">
+      </form>
+    </center>
+    <center id="loading" class="scale0">
+      <span class="ball"></span>
+      <span class="ball"></span>
+      <span class="ball"></span>
+      <span class="ball"></span>
+      <span class="ball"></span>
+      <span class="ball"></span>
+      <span class="ball"></span>
+      
+    </center>
+    <center>
+      <section class="major scale0" id="response" style="user-select: auto;"></section>
+    </center>
+  </main>
+  <nav tabindex="0">
+    <center>
+      <h1><button tip="Delete History" class="scale0">❌ </button> History⌛</h1>
+    </center>
+    <hr>
+    <div></div>
+  </nav>
+  <section id="blurscreen">
+    <div onclick="setting(true)" class="area"></div>
+    <dialog>
+      <fieldset>
+        <legend>
+          <h3>Basic</h3>
+        </legend>
+        <label for="grade">Grade:</label>
+        <input id="grade" type="range" min="1" max="12" oninput="pastChoice(this, 'tip')" onmouseover="pastChoice(this, 'tip')" onmouseout="document.documentElement.style.setProperty('--thumb', 0)">
+        <label>Custom Sub: </label>
+        <input type="text" id="cSubject" placeholder="Comma separated Values ⚡" onchange="pastChoice(this, 'value')">
+      </fieldset>
+      <fieldset>
+        <legend>
+          <h3>Account</h3>
+        </legend>
+        <label>Name:</label><input type="text" name="name" autocomplete="name" placeholder="Your name..." id="newName">
+        <label>Email:</label><input type="email" name="email" autocomplete="email" placeholder="Your email..." id="newMail">
+        <br>
+        <div class="actionBtns" style="grid-column: span 2">
+          <button id="resetPass" before="🔑">Reset Password</button>
+          <button id="signOut" before="🏃‍♀️">Sign Out</button>
+          <button id="deleteAcc" before="❌">Delete Account</button>
+        </div>
+      </fieldset>
+    </dialog>
+  </section>
+  <button id="tts" onclick="txt2speech(textarea.value)" class="scale0" tip="Text to speech">🗣️</button>
+  <div id="sign">
+    <fieldset dir="rtl" id="signin" tabindex="0">
+      <legend onclick="loginForm(document.getElementById('signin'), document.getElementById('register'))">Sign In</legend>
+      <form>
+        <input type="email" placeholder="E-mail" name="email" title="Your registered email" required>
+        <input type="password" placeholder="Password" name="current-password" autocomplete="off" title="Your Gradians password" required>
+        <span dir="ltr"><button type="submit" value="Sign up" before="📥" tip="Leave password for password-less sign in">Log In</button><button type="reset" tip="Clear form">🗑️</button></span>
+      </form>
+    </fieldset>
+    <fieldset id="register" tabindex="0">
+      <legend onclick="loginForm(document.getElementById('register'), document.getElementById('signin'))">Register</legend>
+      <form onsubmit="return false;" autocomplete="on" id="createUser">
+        <input type="text" placeholder="Name" name="name" title="Your display name" required>
+        <input type="email" placeholder="E-mail" name="email" title="A working email" required>
+        <input type="password" placeholder="Password" name="new-password" autocomplete="off" title="8 characters, a number, an uppercase, a lower case & a special character">
+        <input type="password" placeholder="Confirm password" name="new-password" autocomplete="off" title="Type your password again"><br>
+        <span><button type="submit" value="Sign up" before="📥" tip="Leave password for password-less registeration">Sign Up</button><button type="reset" tip="Clear form">🗑️</button></span>
+      </form>
+    </fieldset>
+    <div class="actionBtns loginBtns">
+      <button id="google"><sub><img src="icons/google.svg" tip= "Login with Google Account" alt="Google"></sub> Google</button>
+      <button id="microsoft" tip="Login with MS Account"style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"><sub><img src="icons/microsoft.svg" alt="Microsoft"></sub> Microsoft</button>
+      <button id="github" style="font-family: Consolas;"tip="Login with Github"><sub><img src="icons/github.svg" alt="GitHub"></sub> GitHub</button>
+      <button id="yahoo"  before="y!" style="font-weight: bolder;" tip="Login with Yahoo account"> Yahoo</button>
+      <button id="fb" style="font-family: Consolas;" tip="Login with Facebook " <sub><img src="icons/fb.svg" alt="GitHub"></sub>Facebook</button>
+    </div>
+  </div>
+  <div id="particles-js"></div>
+  <script src="scripts/particles.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <section id="offline">
+    <span>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+      <ul><small>.</small></ul>
+    </span>
+  </section>
+<script>
+</script>
+  <script src="scripts/gradebot.js"></script>
+  <script type="importmap">
+    
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+  <script type="module" src="scripts/firebase.js"></script>
+  <script type="module" src="scripts/gemini.js"></script>
+</body>
+</html>
+<!-- By rajibul -->

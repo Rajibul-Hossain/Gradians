@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoNotes AI • Video Analyser</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="others.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    
+  </style>
+</head>
+<body>
+  
+  <div class="app">
+    <h1>🎓 AutoNotes AI – Video Summarizer</h1>
+    <div class="input-bar">
+      <input id="topicInput" type="text" placeholder="Enter topic and class" />
+  <select id="modelSelect" class="ui8-dropdown">
+    <option value="gemini">Elaborate</option>
+    <option value="claude">Brief</option>
+  </select>
+
+
+
+      <button id="generateBtn">Summarise</button>
+    </div>
+    <div id="loading">
+<svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+	<circle class="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
+	<circle class="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
+	<circle class="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+	<circle class="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+</svg>
+    </div>
+  
+<div id= "loading" class="loader">
+  <div class="loader__balls">
+    <div class="loader__balls__group">
+      <div class="ball item1"></div>
+      <div class="ball item1"></div>
+      <div class="ball item1"></div>
+    </div>
+    <div class="loader__balls__group">
+      <div class="ball item2"></div>
+      <div class="ball item2"></div>
+      <div class="ball item2"></div>
+    </div>
+    <div class="loader__balls__group">
+      <div class="ball item3"></div>
+      <div class="ball item3"></div>
+      <div class="ball item3"></div>
+    </div>
+  </div>
+</div>
+    <div id="videoCard">
+      <img id="thumb" src="" alt="thumbnail" />
+      <div>
+        <a id="videoLink" target="_blank"><h3 id="videoTitle"></h3></a>
+      </div>
+    </div>
+    <pre id="summaryBox"></pre>
+    <button id="downloadBtn" style="display:none;">⬇️ Download Summary</button>
+
+  </div>
+<button id="chatBtn" title="Ask about this summary">▶️</button>
+<div id="chatPopup">
+  <div id="chatHeader">
+    Chat with AI
+    <button id="chatClose" style="background:none;border:0;font-size:1.2rem;color:var(--fg);cursor:pointer">✕</button>
+  </div>
+  <div id="chatBody"></div>
+  <div id="chatInputRow">
+    <textarea id="chatInput" rows="1" placeholder="Type your question…"></textarea>
+    <button id="chatSend">➤</button>
+  </div>
+</div>
+<button id="settingsBtn" title="Account settings">⚙️</button>
+
+<div id="settingsPopup">
+  <div id="settingsHeader">
+    Account
+    <button id="settingsClose">✕</button>
+  </div>
+
+  <div id="accountCard">
+    <img id="userPfp" src="" alt="avatar">
+    <div class="meta">
+      <span id="userName">User</span>
+      <small id="userEmail">user@example.com</small>
+    </div>
+  </div>
+
+  <div id="settingsActions">
+    <button id="addProfile">➕ Add Profile</button>
+    <button id="signOut">🚪 Sign Out</button>
+    <button id="deleteAccount" class="danger">🗑️ Delete Account</button>
+  </div>
+</div>
+
+<!-- History button -->
+<button id="historyBtn" title="History">📜</button>
+
+<!-- History side‑panel -->
+<aside id="historyPanel">
+  <header>
+    <h2>History</h2>
+  </header>
+  <ul id="historyList"></ul>
+</aside>
+<div id="edgeHandle"></div>
+<div id="edgeScrim"></div>
+<aside id="edgeTray">
+  <ul class="edge-stack">
+    <li><button><span></span></button></li>
+    <li><button><span></span></button></li> 
+    <li><button title="Generate Flowchats to understand better" onclick="window.location.href='Flow/demo.html'"><span>🌆</span></button></li>
+    <li><button title="Get your answers corrected instantly" onclick="window.location.href='Gradians_AI/public/main.html'"><span>✅</span></button></li>
+        <li>
+  <button id="searchBtn" title="Search on Google" data-tip="Search">
+    <span>🔍</span>
+  </button>
+</li>
+
+    <li><button title="Account settings" onclick="toggleSettingsPopup()"><span>⚙️</span></button></li>
+    <li><button title="Get Suggestions from experts" onclick="window.location.href='VIDEOS/index.html'"><span>📘</span></button></li>
+  </ul>
+</aside>
+<script>
+    const tray   = document.getElementById("edgeTray");
+  const handle = document.getElementById("edgeHandle");
+  const scrim  = document.getElementById("edgeScrim");
+
+  console.log("Edge panel initialized ✅");
+
+  function openTray() {
+    console.log("Opening tray");
+    tray.classList.add("open");
+    scrim.style.opacity = "1";
+    scrim.style.pointerEvents = "all";
+  }
+
+  function closeTray() {
+    console.log("Closing tray");
+    tray.classList.remove("open");
+    scrim.style.opacity = "0";
+    scrim.style.pointerEvents = "none";
+  }
+
+  handle.addEventListener("click", openTray);
+  scrim.addEventListener("click", closeTray);
+    document.getElementById('searchBtn').addEventListener('click', () => {
+    const query = prompt("Enter a topic you want to learn more about 😊");
+    if (query) {
+      const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+      window.open(url, '_blank');
+    }
+  });
+
+
+</script>
+
+  <script type="module" src="src.js"></script>
+  <script type="module" src="fire.js"></script>
+</body>
+</html>

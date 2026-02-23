@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualize Ideas Like a Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+:root{
+  --bg: #050508;
+  --card: rgba(255,255,255,0.06);
+  --card-strong: rgba(255,255,255,0.09);
+  --stroke: rgba(255,255,255,0.12);
+
+  --accent-start: #ffffff;
+  --accent-end: #d8d8d8;
+
+  --glow1: rgba(255,255,255,0.18);
+  --glow2: rgba(160,160,255,0.12);
+  --glow3: rgba(255,120,220,0.10);
+
+  --txt-primary: #f5f7fb;
+  --txt-secondary: rgba(245,247,251,0.72);
+
+  --radius: 1.8rem;
+  --radius-xl: 2.4rem;
+  --shadow-elev: 0 18px 70px rgba(0,0,0,0.75);
+  --shadow-soft: 0 8px 24px rgba(0,0,0,0.45);
+
+  --blur: 22px;
+  --timing: cubic-bezier(.22,1,.36,1);
+
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Poppins,system-ui,sans-serif;
+  color:var(--txt-primary);
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:2.6rem;
+  padding:3.4rem 1.5rem 6rem;
+  background: radial-gradient(circle at 15% 10%, rgba(255,255,255,0.10), transparent 40%),
+              radial-gradient(circle at 90% 20%, rgba(130,200,255,0.14), transparent 45%),
+              radial-gradient(circle at 70% 90%, rgba(255,120,220,0.14), transparent 55%),
+              linear-gradient(180deg, #050508 0%, #07070b 40%, #050508 100%);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+
+/* subtle iOS grain overlay */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:var(--noise);
+  opacity:0.12;
+  pointer-events:none;
+  mix-blend-mode:overlay;
+  z-index:-1;
+}
+
+h1{
+  font-size:clamp(1.7rem, 1.3vw + 1.2rem, 2.5rem);
+  font-weight:700;
+  letter-spacing:.03em;
+  text-align:center;
+  line-height:1.2;
+  background:linear-gradient(135deg,#ffffff 0%,#d0d0d0 45%,#ffffff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 10px 30px rgba(0,0,0,0.65);
+  position:relative;
+}
+
+/* title glow */
+h1::after{
+  content:"";
+  position:absolute;
+  inset:-18px -30px;
+  background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 60%);
+  filter:blur(18px);
+  opacity:0.75;
+  z-index:-1;
+}
+
+.panel{
+  width:100%;
+  max-width:58rem;
+  padding:2.6rem 2.4rem;
+  border-radius:var(--radius-xl);
+  background:linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border:1px solid var(--stroke);
+  backdrop-filter:blur(var(--blur)) saturate(160%);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(160%);
+  box-shadow:var(--shadow-elev);
+  position:relative;
+  overflow:hidden;
+  transform:translateZ(0);
+  transition:transform .55s var(--timing), box-shadow .55s var(--timing);
+}
+
+/* OneUI neon edge glow */
+.panel::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:inherit;
+  background:linear-gradient(135deg,
+    rgba(255,255,255,0.14),
+    rgba(120,180,255,0.10),
+    rgba(255,120,220,0.10),
+    rgba(255,255,255,0.12)
+  );
+  filter:blur(18px);
+  opacity:0.65;
+  z-index:-1;
+}
+
+/* internal glossy shine */
+.panel::after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:-40%;
+  width:180%;
+  height:180%;
+  background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.12), transparent 55%);
+  transform:rotate(18deg);
+  opacity:0.85;
+  pointer-events:none;
+}
+
+.panel:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 22px 90px rgba(0,0,0,0.88);
+}
+
+.bar{
+  display:flex;
+  gap:1.2rem;
+  align-items:center;
+  margin-bottom:1.4rem;
+}
+
+input{
+  flex:1;
+  padding:1.15rem 1.45rem;
+  border-radius:1.4rem;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(15,15,18,0.72);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  font-size:1rem;
+  font-weight:500;
+  outline:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03);
+  transition:all .35s var(--timing);
+}
+
+input::placeholder{
+  color:rgba(245,247,251,0.55);
+  letter-spacing:0.02em;
+}
+
+input:focus{
+  border:1px solid rgba(255,255,255,0.40);
+  background:rgba(22,22,26,0.85);
+  box-shadow:
+    0 0 0 4px rgba(255,255,255,0.08),
+    0 10px 28px rgba(0,0,0,0.55);
+  transform:translateY(-1px);
+}
+
+button{
+  padding:1.15rem 1.9rem;
+  border:none;
+  border-radius:1.4rem;
+  cursor:pointer;
+  font-size:1rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+  color:#06070a;
+  background:linear-gradient(135deg, #ffffff 0%, #d7d7d7 50%, #ffffff 100%);
+  box-shadow:
+    0 12px 30px rgba(255,255,255,0.08),
+    0 10px 30px rgba(0,0,0,0.55);
+  position:relative;
+  overflow:hidden;
+  transition:transform .35s var(--timing), box-shadow .35s var(--timing);
+}
+
+/* animated glossy highlight sweep */
+button::before{
+  content:"";
+  position:absolute;
+  top:-60%;
+  left:-60%;
+  width:220%;
+  height:220%;
+  background:linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.85) 40%,
+    transparent 70%
+  );
+  transform:rotate(20deg);
+  opacity:0;
+  transition:opacity .45s var(--timing);
+}
+
+button:hover{
+  transform:translateY(-3px) scale(1.05);
+  box-shadow:
+    0 16px 45px rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.70);
+}
+
+button:hover::before{
+  opacity:0.55;
+  animation:sweep 1.2s var(--timing);
+}
+
+button:active{
+  transform:scale(0.96);
+}
+
+@keyframes sweep{
+  0%{transform:translateX(-30%) rotate(20deg);}
+  100%{transform:translateX(30%) rotate(20deg);}
+}
+
+/* Loader upgrade */
+.loader{
+  width:2.6rem;
+  height:2.6rem;
+  border-radius:50%;
+  border:4px solid rgba(255,255,255,0.12);
+  border-top:4px solid rgba(255,255,255,0.9);
+  border-right:4px solid rgba(180,220,255,0.7);
+  animation:spin .75s linear infinite;
+  margin:auto;
+  filter:drop-shadow(0 0 18px rgba(255,255,255,0.20));
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+section{
+  margin-top:2.2rem;
+  padding:1.6rem 1.5rem;
+  border-radius:1.8rem;
+  background:linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.10);
+  box-shadow:var(--shadow-soft);
+  transition:transform .4s var(--timing);
+}
+
+section:hover{
+  transform:translateY(-3px);
+}
+
+h3{
+  font-size:1.15rem;
+  font-weight:700;
+  margin-bottom:1rem;
+  letter-spacing:0.02em;
+  color:rgba(255,255,255,0.92);
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+}
+
+h3::before{
+  content:"";
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(180,220,255,0.7));
+  box-shadow:0 0 18px rgba(255,255,255,0.25);
+}
+
+img{
+  width:100%;
+  max-height:580px;
+  object-fit:contain;
+  border-radius:1.6rem;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(0,0,0,0.25);
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.70),
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+  transition:transform .45s var(--timing), box-shadow .45s var(--timing);
+}
+
+img:hover{
+  transform:scale(1.015);
+  box-shadow:
+    0 18px 55px rgba(0,0,0,0.85),
+    0 0 0 2px rgba(255,255,255,0.10);
+}
+
+.explain{
+  margin-top:1.4rem;
+  padding:1.2rem 1.2rem;
+  border-radius:1.4rem;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.explain ul{
+  padding-left:1.2rem;
+}
+
+.explain li{
+  margin:.55rem 0;
+  line-height:1.7;
+  font-size:0.96rem;
+  font-weight:500;
+  color:var(--txt-secondary);
+}
+
+#status{
+  margin-top:1rem;
+  font-size:0.95rem;
+  font-weight:600;
+  color:rgba(255,255,255,0.78);
+  letter-spacing:0.02em;
+}
+
+/* smooth page animation */
+.panel, section, h1{
+  animation:fadeUp .8s var(--timing) both;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(18px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* Responsive */
+@media (max-width:720px){
+  .panel{
+    padding:2rem 1.6rem;
+    border-radius:2rem;
+  }
+  .bar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  button{
+    width:100%;
+  }
+  input{
+    width:100%;
+  }
+}
+
+@media (max-width:480px){
+  h1{
+    font-size:1.55rem;
+  }
+  section{
+    padding:1.3rem 1.2rem;
+  }
+  img{
+    max-height:420px;
+  }
+}
+.topbar{
+  width:100%;
+  max-width:58rem;
+  text-align:left;
+  padding:0.2rem 0.4rem;
+}
+
+.subtitle{
+  margin-top:.4rem;
+  font-size:0.95rem;
+  font-weight:500;
+  color:rgba(245,247,251,0.65);
+  letter-spacing:0.02em;
+}
+.top-right-btn{
+  position: fixed;
+  top: 22px;
+  right: 22px;
+
+  padding: 16px 28px;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #ffffff, #bdbdbd);
+  color: black;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  box-shadow: 0 0 25px rgba(255,255,255,0.25),
+              0 0 70px rgba(255,255,255,0.15),
+              0 25px 90px rgba(0,0,0,0.85);
+
+  transition: all 0.35s cubic-bezier(.22,.9,.22,1);
+  z-index: 9999;
+
+  overflow: hidden;
+}
+
+/* Shine sweep */
+.top-right-btn::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.8),
+    transparent
+  );
+  transform: skewX(-20deg);
+}
+
+/* Auto glow pulse */
+.top-right-btn{
+  animation: pulseGlow 2.6s ease-in-out infinite;
+}
+
+@keyframes pulseGlow{
+  0%,100%{
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(255,255,255,0.25),
+                0 0 70px rgba(255,255,255,0.15),
+                0 25px 90px rgba(0,0,0,0.85);
+  }
+  50%{
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(255,255,255,0.35),
+                0 0 110px rgba(255,255,255,0.25),
+                0 35px 120px rgba(0,0,0,0.92);
+  }
+}
+
+/* Hover effect */
+.top-right-btn:hover{
+  transform: translateY(-6px) scale(1.08);
+  background: white;
+  box-shadow: 0 0 40px rgba(255,255,255,0.45),
+              0 0 140px rgba(255,255,255,0.35),
+              0 40px 140px rgba(0,0,0,0.95);
+}
+
+/* Shine animation on hover */
+.top-right-btn:hover::after{
+  animation: shineMove 0.9s ease;
+}
+
+@keyframes shineMove{
+  0%{ left:-120%; }
+  100%{ left:120%; }
+}
+.top-right-btn{
+  position: fixed;
+  top: 22px;
+  right: 22px;
+}
+
+/* Tooltip box */
+.top-right-btn::before{
+  content: attr(data-tip);
+  position: absolute;
+
+  top: 115%;
+  right: 0;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(20,20,20,0.92);
+  color: white;
+
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+
+  white-space: nowrap;
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(14px);
+
+  transition: 0.25s ease;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.85);
+  z-index: 99999;
+}
+
+/* Tooltip arrow */
+.top-right-btn::after{
+  content: "";
+  position: absolute;
+
+  top: 102%;
+  right: 22px;
+
+  width: 10px;
+  height: 10px;
+
+  background: rgba(20,20,20,0.92);
+  transform: rotate(45deg);
+
+  opacity: 0;
+  pointer-events: none;
+
+  border-left: 1px solid rgba(255,255,255,0.14);
+  border-top: 1px solid rgba(255,255,255,0.14);
+
+  transition: 0.25s ease;
+}
+
+/* Show tooltip on hover */
+.top-right-btn:hover::before,
+.top-right-btn:hover::after{
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+/* Tabs */
+.tabs{
+  margin-top:1.6rem;
+  display:flex;
+  gap:0.7rem;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:1.5rem;
+  padding:0.55rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.tab{
+  flex:1;
+  padding:0.9rem 1rem;
+  border:none;
+  border-radius:1.2rem;
+  cursor:pointer;
+  background:transparent;
+  color:rgba(245,247,251,0.72);
+  font-weight:700;
+  font-size:0.95rem;
+  position:relative;
+  z-index:2;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+}
+
+.tab.active{
+  color:#050508;
+}
+
+.tab-indicator{
+  position:absolute;
+  top:0.55rem;
+  bottom:0.55rem;
+  left:0;
+  width:50%;
+  border-radius:1.2rem;
+  background:linear-gradient(135deg,#ffffff,#d8d8d8);
+  box-shadow:0 10px 30px rgba(255,255,255,0.12);
+  transition:all .45s cubic-bezier(.22,1,.36,1);
+  z-index:1;
+}
+
+/* Swipe pages */
+.swipe-container{
+  width:100%;
+  margin-top:1.6rem;
+  overflow:hidden;
+  border-radius:2rem;
+}
+
+.swipe-track{
+  display:flex;
+  width:200%;
+  transition:transform 0.45s cubic-bezier(.22,1,.36,1);
+}
+
+.page{
+  width:100%;
+  flex:0 0 100%;
+  padding:0;
+  margin:0;
+  background:transparent;
+  border:none;
+  box-shadow:none;
+}
+
+/* Bottom Navigation (One UI style) */
+.bottom-nav{
+  position:fixed;
+  bottom:1.2rem;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(92%, 420px);
+  padding:0.75rem 0.85rem;
+  border-radius:2rem;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  box-shadow:0 18px 55px rgba(0,0,0,0.75);
+  display:flex;
+  justify-content:space-between;
+  gap:0.6rem;
+  z-index:999;
+}
+
+.nav-item{
+  flex:1;
+  border:none;
+  cursor:pointer;
+  border-radius:1.6rem;
+  padding:0.75rem 0.6rem;
+  background:transparent;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0.25rem;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+  color:rgba(255,255,255,0.75);
+}
+
+.nav-icon{
+  font-size:1.25rem;
+}.page-container{
+  position: fixed;
+  inset: 0; /* covers full screen */
+  
+  width: 100%;
+  height: 100vh;
+
+  border-radius: 0px;
+  overflow: hidden;
+
+  background: rgba(0,0,0,0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow: 0 40px 160px rgba(0,0,0,0.95);
+
+  opacity: 0;
+  transform: translateY(50px) scale(0.96);
+  pointer-events: none;
+
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(.16,1,.3,1);
+  z-index: 99999;
+}
+
+/* Active state */
+.page-container.active{
+  opacity: 1;
+  transform: translateY(0px) scale(1);
+  pointer-events: auto;
+}
+
+/* Smooth iframe */
+.page-container iframe{
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0px;
+}
+
+/* Exit animation (optional class) */
+.page-container.closing{
+  opacity: 0;
+  transform: translateY(70px) scale(0.94);
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(.22,.9,.22,1);
+}
+
+
+.nav-label{
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+  opacity:0.75;
+}
+
+.nav-item.active{
+  background:linear-gradient(135deg, rgba(255,255,255,0.92), rgba(220,220,220,0.85));
+  color:#050508;
+  box-shadow:0 12px 40px rgba(255,255,255,0.10);
+  transform:translateY(-3px);
+}
+
+.nav-item.active .nav-label{
+  opacity:1;
+}
+
+/* make room so bottom nav doesn't overlap */
+body{
+  padding-bottom:8rem;
+}
+
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Visualize Ideas Like a Pro</h1>
+    <p class="subtitle">Turn your ideas into structured diagrams with smart tools, smooth editing, and instant export.</p>
+  </header>
+
+  <main class="panel">
+
+    <!-- Input Bar -->
+    <div class="bar">
+      <input id="topic" placeholder="Enter educational topic…" />
+      <button id="genBtn">Generate</button>
+    </div>
+
+    <div id="status" style="text-align:center;margin-top:1rem"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="mind">Mind Map</button>
+      <button class="tab" data-tab="flow">Flowchart</button>
+      <div class="tab-indicator"></div>
+    </div>
+
+    <!-- Swipe Pages -->
+    <div class="swipe-container" id="swipeContainer">
+      <div class="swipe-track" id="swipeTrack">
+
+        <!-- Mind Page -->
+        <section class="page" data-page="mind">
+          <h3>Mind Map</h3>
+          <div id="mindImg"></div>
+          <div id="mindText" class="explain"></div>
+        </section>
+
+        <!-- Flow Page -->
+        <section class="page" data-page="flow">
+          <h3>Flowchart</h3>
+          <div id="flowImg"></div>
+          <div id="flowText" class="explain"></div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+<button class="top-right-btn" onclick="openPageInContainer()">
+  ⚡Flashcards
+</button>
+
+<div class="page-container" id="pageContainer">
+  <iframe id="pageFrame"></iframe>
+</div>
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="mind">
+      <span class="nav-icon">🧠</span>
+      <span class="nav-label">Mind</span>
+    </button>
+    <button class="nav-item" data-tab="flow">
+      <span class="nav-icon">📌</span>
+      <span class="nav-label">Flow</span>
+    </button>
+  </nav>
+<script>
+const IMAGEN_API_KEY = "AQ.Ab8RN6JPgeie8A0dXmaf0t7N9dp-nB2tZhdtkfmmUYCYY94ABA";
+const IMAGEN_MODEL_URL =
+  `https://aiplatform.googleapis.com/v1/publishers/google/models/imagen-3.0-generate-001:predict?key=${IMAGEN_API_KEY}`;
+const GEMINI_API_KEY = "AIzaSyCDI_le44rk_KWjRz68krpemtZrm7U-2jU";
+const GEMINI_TEXT_MODEL = "gemini-3.0-flash";
+const GEMINI_TEXT_ENDPOINT =
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`;
+async function generateGeminiImage(prompt) {
+  const res = await fetch(IMAGEN_MODEL_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      instances: [{ prompt }],
+      parameters: { sampleCount: 1 }
+    })
+  });
+
+  const data = await res.json();
+  console.log("Vertex Imagen Response:", data);
+
+  const base64 = data?.predictions?.[0]?.bytesBase64Encoded;
+
+  if (!base64) {
+    throw new Error("No image returned from Vertex Imagen API");
+  }
+
+  return `data:image/png;base64,${base64}`;
+}
+async function generateExplanation(kind, topic) {
+  const prompt = `
+Explain this ${kind} topic in a clean structured way:
+Topic: "${topic}"
+
+Give answer in 6-10 bullet points.
+Make it educational and easy to understand.
+`;
+
+  const body = {
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: prompt }]
+      }
+    ]
+  };
+
+  const res = await fetch(GEMINI_TEXT_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  const json = await res.json();
+  const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!text) throw new Error("No explanation returned from Gemini");
+
+  return text.trim();
+}
+async function generateDiagram(kind, topic) {
+  const imagePrompt = `
+Create a premium, clean, high-resolution ${kind} diagram for the topic:
+"${topic}"
+
+STYLE RULES:
+- Minimal modern style
+- White background
+- Dark readable text
+- Clean lines, neat arrows
+- Professional educational infographic
+- No extra decoration
+- Balanced spacing
+- Must be very clear and easy to read
+`;
+  const [imgURL, explanation] = await Promise.all([
+    generateGeminiImage(imagePrompt),
+    generateExplanation(kind, topic)
+  ]);
+
+  return { imgURL, explanation };
+}
+function closeContainer(){
+  const container = document.getElementById("pageContainer");
+
+  container.classList.add("closing");
+
+  setTimeout(()=>{
+    container.classList.remove("active");
+    container.classList.remove("closing");
+  }, 380);
+}
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    closeContainer();
+  }
+});
+
+function formatExplanation(text) {
+  const lines = text
+    .split("\n")
+    .map(l => l.replace(/^[-•*]\s*/, "").trim())
+    .filter(Boolean);
+
+  const items = lines.map(l => `<li>${l}</li>`).join("");
+  return `<ul>${items}</ul>`;
+}
+async function generate() {
+  const topic = document.querySelector("#topic").value.trim();
+  if (!topic) return;
+
+  const status = document.querySelector("#status");
+
+  const mindImg = document.querySelector("#mindImg");
+  const flowImg = document.querySelector("#flowImg");
+  const mindText = document.querySelector("#mindText");
+  const flowText = document.querySelector("#flowText");
+
+  mindImg.innerHTML = "";
+  flowImg.innerHTML = "";
+  mindText.innerHTML = "";
+  flowText.innerHTML = "";
+
+  status.innerHTML = `<div class="loader"></div>`;
+
+  try {
+    const [mindData, flowData] = await Promise.all([
+      generateDiagram("mind map", topic),
+      generateDiagram("flowchart", topic)
+    ]);
+
+    mindImg.innerHTML = `<img src="${mindData.imgURL}" alt="Mind map for ${topic}">`;
+    flowImg.innerHTML = `<img src="${flowData.imgURL}" alt="Flowchart for ${topic}">`;
+
+    mindText.innerHTML = formatExplanation(mindData.explanation);
+    flowText.innerHTML = formatExplanation(flowData.explanation);
+
+  } catch (err) {
+    console.error(err);
+    status.textContent = "❌ " + err.message;
+  } finally {
+    status.innerHTML = "";
+  }
+}
+
+document.querySelector("#genBtn").addEventListener("click", generate);
+document.querySelector("#topic").addEventListener("keydown", e => {
+  if (e.key === "Enter") generate();
+});
+
+
+/* ===============================
+   ONE UI TAB SYSTEM + SWIPE
+================================= */
+const tabs = document.querySelectorAll(".tab");
+const navItems = document.querySelectorAll(".nav-item");
+const indicator = document.querySelector(".tab-indicator");
+const swipeTrack = document.getElementById("swipeTrack");
+const swipeContainer = document.getElementById("swipeContainer");
+
+let currentTab = 0;
+
+function updateIndicator() {
+  const activeTab = tabs[currentTab];
+  const rect = activeTab.getBoundingClientRect();
+  const parentRect = activeTab.parentElement.getBoundingClientRect();
+
+  indicator.style.width = rect.width + "px";
+  indicator.style.left = (rect.left - parentRect.left) + "px";
+}
+
+function setTab(index) {
+  currentTab = index;
+
+  tabs.forEach((t, i) => t.classList.toggle("active", i === index));
+  navItems.forEach((n, i) => n.classList.toggle("active", i === index));
+
+  swipeTrack.style.transform = `translateX(-${index * 100}%)`;
+
+  updateIndicator();
+}
+
+tabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => setTab(index));
+});
+
+navItems.forEach((nav, index) => {
+  nav.addEventListener("click", () => setTab(index));
+});
+
+window.addEventListener("resize", updateIndicator);
+setTimeout(updateIndicator, 80);
+
+
+/* ===============================
+   SWIPE GESTURE SUPPORT
+================================= */
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+
+swipeContainer.addEventListener("pointerdown", (e) => {
+  isDragging = true;
+  startX = e.clientX;
+  swipeTrack.style.transition = "none";
+});
+
+swipeContainer.addEventListener("pointermove", (e) => {
+  if (!isDragging) return;
+
+  currentX = e.clientX;
+  const diff = currentX - startX;
+
+  const offset = (-currentTab * swipeContainer.offsetWidth) + diff;
+  swipeTrack.style.transform = `translateX(${offset}px)`;
+});
+
+swipeContainer.addEventListener("pointerup", () => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  swipeTrack.style.transition = "transform 0.45s cubic-bezier(.22,1,.36,1)";
+
+  const diff = currentX - startX;
+
+  if (diff < -80 && currentTab < 1) currentTab++;
+  if (diff > 80 && currentTab > 0) currentTab--;
+
+  setTab(currentTab);
+});
+
+swipeContainer.addEventListener("pointerleave", () => {
+  if (isDragging) {
+    isDragging = false;
+    swipeTrack.style.transition = "transform 0.45s cubic-bezier(.22,1,.36,1)";
+    setTab(currentTab);
+  }
+});
+</script>
+<script>
+function openPageInContainer(){
+  const container = document.getElementById("pageContainer");
+  const frame = document.getElementById("pageFrame");
+
+  frame.src = "../../../flashcards/index.html";  // your file name
+  container.classList.toggle("active");
+}
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+{
+  "name": "Gradians AI",
+  "short_name": "Gradians",
+  "description": "An advanced AI tool for grading and analysis.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/handwriting.png",
+      "sizes": "1080x1920",
+      "type": "image/png"
+    },
+    {
+      "src": "images/answer.png",
+      "sizes": "1080x1920",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "scope": "/",
+  "serviceworker": {
+    "src": "service-worker.js",
+    "scope": "/",
+    "use_cache": true
+  },
+  "permissions": [
+    "internet"
+  ],
+  "shortcuts": [
+    {
+      "name": "Grading Tool",
+      "short_name": "Grading &amp; Analysis ",
+      "description": "Access the grading tool directly.",
+      "url": "index.html",
+      "icons": [
+        {
+          "src": "notebook.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Handwriting Analysis",
+      "short_name": "Notebook",
+      "description": "Analyze notebooks directly.",
+      "url": "handwriting.htm",
+      "icons": [
+        {
+          "src": "logo.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "id": "Gradians AI"
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<!---->
+<style>
+      .designer-container {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        animation: fadeInJump 6s ease-in-out infinite;
+    }
+
+    .designer {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1em;
+    }
+    @keyframes fadeInJump {
+        0%, 100% {
+            opacity: 0;
+            transform: translateY(0);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+    }
+</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradians Handwriting</title>
+  <link href="stylesheets/styles.css" rel="stylesheet">
+  <link href="stylesheets/handwriting.css" rel="stylesheet">
+  <link rel="icon" href="logo.svg" type="image/x-icon">
+</head>
+
+<body bgcolor="black">
+  <div class="designer-container">
+    <div class="designer">
+      Team NextWave
+    </div>
+</div>
+  <a href="index.html?settings" style="position: fixed; top: 1vw; right: 1vw;" tip="Settings">⚙️</a>
+  <a href="index.html" style="position: fixed; top: 1vw; right: 3.5vw;" tip="Back">⬅️</a>
+  <section>
+    <div>
+      <span id="dropbox">
+        <span>Drop it here!</span>
+        <small>Upload your</small><big>&nbsp;Handwriting</big>
+      </span>
+    </div>
+    <div id="response-parent">
+      <div id="response"></div>
+      <br>
+      <button before="🔄" id="regenerate">Re - generate</button>
+    </div>
+  </section>
+  <center id="loading" class="scale0">
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+  </center>
+
+  <input class="hide" type="file" id="qna" accept="image/png, image/jpeg, image/webp, image/heic, image/heif">
+  <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+      </script>
+  <script src="scripts/handwriting.js" type="module"></script>
+  <script type="module" src="scripts/firebase.js"></script>
+</body>
+
+</html>
+<!-- By rajibul -->
